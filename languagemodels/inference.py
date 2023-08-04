@@ -198,9 +198,7 @@ def generate_code(
     )
     output_tokens = results[0].hypotheses[0]
     output_ids = [tokenizer.token_to_id(t) for t in output_tokens]
-    text = tokenizer.decode(output_ids, skip_special_tokens=True)
-
-    return text
+    return tokenizer.decode(output_ids, skip_special_tokens=True)
 
 
 def rank_instruct(input, targets):
@@ -303,7 +301,7 @@ def parse_chat(prompt):
     """
 
     if not re.match(r"^\s*\w+:", prompt):
-        prompt = "System: " + prompt
+        prompt = f"System: {prompt}"
 
     prompt = "\n\n" + prompt
 

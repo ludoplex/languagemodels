@@ -8,8 +8,7 @@ import psutil
 def mem_used_gb():
     process = psutil.Process(os.getpid())
     bytes = process.memory_info().rss
-    gigabytes = bytes * 1e-9
-    return gigabytes
+    return bytes * 1e-9
 
 
 print(f"Memory used before loading models: {mem_used_gb():.2f}GB")

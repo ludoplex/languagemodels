@@ -96,13 +96,9 @@ def chunk_doc(doc, name="", chunk_size=64, chunk_overlap=8):
     tokens = get_token_ids(doc)
     separators = [get_token_ids(t)[-1] for t in [".", "!", "?", ")."]]
 
-    name_tokens = []
-
     label = f"From {name} document:" if name else ""
 
-    if name:
-        name_tokens = get_token_ids(label)
-
+    name_tokens = get_token_ids(label) if name else []
     i = 0
     chunks = []
     chunk = name_tokens.copy()
@@ -281,9 +277,7 @@ class RetrievalContext:
                 chunks.append(chunk)
                 tokens += chunk_tokens
 
-        context = "\n\n".join(chunks)
-
-        return context
+        return "\n\n".join(chunks)
 
     def get_match(self, query):
         if len(self.docs) == 0:

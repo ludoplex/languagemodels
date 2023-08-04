@@ -23,7 +23,7 @@ def get_model_info(model_type="instruct"):
 
     m = [m for m in models if m["name"] == model_name][0]
 
-    param_bits = int(re.search(r"\d+", m["quantization"]).group(0))
+    param_bits = int(re.search(r"\d+", m["quantization"])[0])
 
     m["size_gb"] = m["params"] * param_bits / 8 / 1e9
 
@@ -94,9 +94,7 @@ def get_model(model_type, tokenizer_only=False):
 
     if model_name not in modelcache:
         tokenizer = initialize_tokenizer(model_type, model_name)
-        model = None
-        if not tokenizer_only:
-            model = initialize_model(model_type, model_name)
+        model = None if tokenizer_only else initialize_model(model_type, model_name)
         modelcache[model_name] = (tokenizer, model)
     elif not tokenizer_only:
         # Make sure model is loaded if we've never loaded it

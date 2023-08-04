@@ -38,11 +38,7 @@ def complete(prompt: str) -> str:
         "Write a sentence", max_tokens=200, temperature=0.7, topk=40, prefix=prompt
     )
 
-    if result.startswith(prompt):
-        prefix_length = len(prompt)
-        return result[prefix_length:]
-    else:
-        return result
+    return result[len(prompt):] if result.startswith(prompt) else result
 
 
 def do(prompt: str) -> str:
@@ -68,7 +64,7 @@ def do(prompt: str) -> str:
         result = result.title()
 
         if result[-1] not in (".", "!", "?"):
-            result = result + "."
+            result = f"{result}."
 
     return result
 
@@ -186,9 +182,7 @@ def code(prompt: str) -> str:
     >>> code("def return_4():")
     '...return 4...'
     """
-    result = generate_code(prompt, max_tokens=200, topk=1)
-
-    return result
+    return generate_code(prompt, max_tokens=200, topk=1)
 
 
 def extract_answer(question: str, context: str) -> str:

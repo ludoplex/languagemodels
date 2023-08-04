@@ -215,8 +215,7 @@ class Config(dict):
 
         # Environment variables override defaults
         for key in Config.schema:
-            value = os.environ.get(f"LANGUAGEMODELS_{key.upper()}")
-            if value:
+            if value := os.environ.get(f"LANGUAGEMODELS_{key.upper()}"):
                 self[key] = value
 
         # Any values passed in the config dict override environment vars
@@ -227,7 +226,7 @@ class Config(dict):
         super().__setitem__(key, Config.schema[key].initfn(value))
 
         # Auto-adjust instruct_model when filters change
-        if key == "max_ram" or key == "model_license":
+        if key in ["max_ram", "model_license"]:
             found = set()
             for model in models:
                 assert model["quantization"] == "int8"
@@ -236,11 +235,11 @@ class Config(dict):
 
                 sizefit = memsize < self["max_ram"]
 
-                if "model_license" in self:
-                    licensematch = self["model_license"].match(model["license"])
-                else:
-                    licensematch = True
-
+                licensematch = (
+                    self["model_license"].match(model["license"])
+                    if "model_license" in self
+                    else True
+                )
                 if model["tuning"] not in found and sizefit and licensematch:
                     self[model["tuning"] + "_model"] = model["name"]
                     found.add(model["tuning"])
@@ -295,7 +294,7 @@ class Config(dict):
         16.0
         """
 
-        if isinstance(space, int) or isinstance(space, float):
+        if isinstance(space, (int, float)):
             return float(space)
 
         size_names = {
